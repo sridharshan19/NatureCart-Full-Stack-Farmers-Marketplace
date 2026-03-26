@@ -118,6 +118,48 @@ exports.deleteProduct = async (req, res, next) => {
   }
 };
 
+exports.updateProduct = async (req, res, next) => {
+  try {
+    const filter = isAdmin(req)
+      ? { _id: req.params.id }
+      : { _id: req.params.id, farmerId: req.user.id };
+
+    const product = await Product.findOne(filter);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found or you are not authorized to update it.",
+      });
+    }
+
+    const targetFarmerId =
+      isAdmin(req) && req.body.farmerId ? req.body.farmerId : product.farmerId;
+
+    product.productName = req.body.productName ?? product.productName;
+    product.category = req.body.category ?? product.category;
+    product.price =
+      req.body.price !== undefined ? Number(req.body.price) : product.price;
+    product.quantity =
+      req.body.quantity !== undefined ? Number(req.body.quantity) : product.quantity;
+    product.farmerId = targetFarmerId;
+
+    if (req.file) {
+      product.image = `/uploads/${req.file.filename}`;
+    }
+
+    await product.save();
+
+    const populatedProduct = await Product.findById(product._id).populate(
+      "farmerId",
+      "name email farmName location"
+    );
+
+    res.json(populatedProduct);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getFarmerOrders = async (req, res, next) => {
   try {
     const farmerId = isAdmin(req) ? getTargetFarmerId(req) : req.user.id;

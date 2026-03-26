@@ -8,11 +8,11 @@ function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <div className="flex min-h-screen flex-col">
+        <div className="app-shell flex min-h-screen flex-col">
           <Navbar />
-          <div className="container mx-auto flex-1 px-4 py-6">
+          <main className="page-frame flex-1 py-6 md:py-8">
             <AppRoutes />
-          </div>
+          </main>
           <Footer />
         </div>
       </ToastProvider>

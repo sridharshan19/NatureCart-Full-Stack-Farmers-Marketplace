@@ -28,33 +28,35 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="mt-8 border-t border-white/30 bg-[linear-gradient(135deg,#111827_0%,#0f766e_55%,#b45309_100%)] text-white shadow-2xl">
-      <div className="container mx-auto grid gap-6 px-4 py-8 md:grid-cols-4">
+    <footer className="brand-shell mt-14 text-slate-900">
+      <div className="page-frame grid gap-8 py-10 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-amber-200">
+            <span className="grain-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-[linear-gradient(135deg,#ffd986_0%,#ffffff_100%)] text-emerald-800">
               <FaLeaf className="text-lg" />
             </span>
             <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-amber-200">
+              <p className="text-xs uppercase tracking-[0.35em] text-amber-700">
                 NatureCart
               </p>
-              <h3 className="mt-1 text-2xl font-black">Fresh trade, clear operations.</h3>
+              <h3 className="mt-1 text-2xl font-black text-emerald-950">
+                Fresh trade, clear operations.
+              </h3>
             </div>
           </div>
 
-          <p className="mt-4 text-sm text-slate-100/85">
+          <p className="mt-4 text-sm text-slate-700">
             Fresh produce marketplace connecting farmers and consumers with
             seamless ordering, role-based access, and pickup coordination.
           </p>
         </div>
 
         <div>
-          <h4 className="mb-3 text-lg font-semibold">Quick Links</h4>
-          <ul className="space-y-2 text-sm text-slate-100/85">
+          <h4 className="mb-3 text-lg font-semibold text-emerald-950">Quick Links</h4>
+          <ul className="space-y-2 text-sm text-slate-700">
             {quickLinks.map((link) => (
               <li key={link.to}>
-                <Link className="hover:text-amber-200" to={link.to}>
+                <Link className="hover:text-emerald-900" to={link.to}>
                   {link.label}
                 </Link>
               </li>
@@ -63,11 +65,11 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="mb-3 text-lg font-semibold">Platform Roles</h4>
-          <ul className="space-y-3 text-sm text-slate-100/85">
+          <h4 className="mb-3 text-lg font-semibold text-emerald-950">Platform Roles</h4>
+          <ul className="space-y-3 text-sm text-slate-700">
             {roleNotes.map((note) => (
               <li key={note} className="flex items-start gap-2">
-                <FaLocationArrow className="mt-1 text-xs text-amber-200" />
+                <FaLocationArrow className="mt-1 text-xs text-amber-700" />
                 <span>{note}</span>
               </li>
             ))}
@@ -75,7 +77,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="mb-3 text-lg font-semibold">Connect</h4>
+          <h4 className="mb-3 text-lg font-semibold text-emerald-950">Connect</h4>
           <div className="flex flex-wrap gap-3 text-sm">
             {socialLinks.map((link) => {
               const Icon = link.icon;
@@ -86,23 +88,23 @@ export default function Footer() {
                   href={link.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 hover:bg-white/20"
+                  className="flex items-center gap-2 rounded-full border border-white/60 bg-white/50 px-3 py-2 hover:-translate-y-0.5 hover:bg-white/80"
                 >
-                  <Icon className="text-sm text-amber-200" />
+                  <Icon className="text-sm text-amber-700" />
                   <span>{link.label}</span>
                 </a>
               );
             })}
           </div>
 
-          <p className="mt-4 text-sm text-slate-100/85">
+          <p className="mt-4 text-sm text-slate-700">
             Built with React, Express, MongoDB, and JWT authentication.
           </p>
         </div>
       </div>
 
-      <div className="border-t border-white/20 py-4 text-center text-sm text-slate-200">
-        © 2026 NatureCart. All rights reserved.
+      <div className="border-t border-white/50 py-4 text-center text-sm text-slate-700">
+        Copyright 2026 NatureCart. All rights reserved.
       </div>
     </footer>
   );

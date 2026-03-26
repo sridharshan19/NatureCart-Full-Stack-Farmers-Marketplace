@@ -3,6 +3,7 @@ const router = require("express").Router();
 const farmerController = require("../controllers/farmerController");
 const auth = require("../middleware/authMiddleware");
 const role = require("../middleware/roleMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 
 // All routes below require farmer or admin role
@@ -16,6 +17,7 @@ router.put("/profile", farmerController.updateFarmerProfile);
 
 // 🌽 Products
 router.get("/products", farmerController.getMyProducts);
+router.put("/products/:id", upload.single("image"), farmerController.updateProduct);
 router.delete("/products/:id", farmerController.deleteProduct);
 
 

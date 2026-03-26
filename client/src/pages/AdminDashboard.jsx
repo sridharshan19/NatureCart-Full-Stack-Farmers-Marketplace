@@ -25,10 +25,10 @@ const adminHighlights = [
 export default function AdminDashboard() {
   return (
     <div className="space-y-6">
-      <section className="rounded-[2rem] bg-[linear-gradient(135deg,#111827_0%,#0f766e_55%,#b45309_100%)] p-8 text-white shadow-2xl">
-        <p className="text-xs uppercase tracking-[0.35em] text-amber-200">Admin analytics</p>
+      <section className="soft-hero p-8 text-slate-900">
+        <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Admin analytics</p>
         <h1 className="mt-3 text-4xl font-bold">Marketplace insight dashboard</h1>
-        <p className="mt-4 max-w-3xl text-sm text-slate-100/85">
+        <p className="mt-4 max-w-3xl text-sm text-slate-700">
           Review revenue, sales activity, top-performing products, and farmer
           contributions from one clear admin view.
         </p>
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
         ))}
       </section>
 
-      <section className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+      <section className="surface-panel p-6">
         <h2 className="text-2xl font-bold text-slate-900">Open analytics report</h2>
         <p className="mt-3 max-w-2xl text-sm text-slate-600">
           Use the full analytics page to inspect revenue, top products, top farmers,

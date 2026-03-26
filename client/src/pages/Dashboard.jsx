@@ -9,6 +9,7 @@ import {
   createProduct,
   deleteManagedProduct,
   getManagedProducts,
+  updateManagedProduct,
 } from "../services/productService";
 import { getFarmerOrders } from "../services/orderService";
 import {
@@ -48,7 +49,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [farmerForm, setFarmerForm] = useState(emptyFarmerForm);
   const [productForm, setProductForm] = useState(emptyProductForm);
-  const { showError, showSuccess } = useToast();
+  const [editingProductId, setEditingProductId] = useState("");
+  const { showError, showInfo, showSuccess } = useToast();
 
   const loadDashboard = async () => {
     if (!user) {
@@ -100,26 +102,6 @@ export default function Dashboard() {
       { total: 0, pending: 0, confirmed: 0, completed: 0 }
     );
   }, [orders]);
-
-  const farmerSalesSummary = useMemo(() => {
-    if (!isFarmer) {
-      return { revenue: 0, unitsSold: 0 };
-    }
-
-    return orders.reduce(
-      (accumulator, order) => {
-        order.products.forEach((product) => {
-          if (["confirmed", "completed"].includes(product.status || order.status)) {
-            accumulator.revenue += Number(product.price || 0) * Number(product.quantity || 0);
-            accumulator.unitsSold += Number(product.quantity || 0);
-          }
-        });
-
-        return accumulator;
-      },
-      { revenue: 0, unitsSold: 0 }
-    );
-  }, [isFarmer, orders]);
 
   const handleFarmerSubmit = async (event) => {
     event.preventDefault();
@@ -186,12 +168,21 @@ export default function Dashboard() {
         delete payload.farmerId;
       }
 
-      await createProduct(payload);
-      showSuccess("Product created successfully.");
+      if (editingProductId) {
+        const updatedProduct = await updateManagedProduct(editingProductId, payload);
+        showSuccess(
+          `${updatedProduct.productName} stock details were updated in MongoDB successfully.`
+        );
+      } else {
+        const createdProduct = await createProduct(payload);
+        showSuccess(`${createdProduct.productName} was created successfully.`);
+      }
+
       setProductForm((current) => ({
         ...emptyProductForm,
         farmerId: isAdmin ? current.farmerId : "",
       }));
+      setEditingProductId("");
       await loadDashboard();
     } catch (error) {
       showError(getErrorMessage(error));
@@ -206,6 +197,25 @@ export default function Dashboard() {
     } catch (error) {
       showError(getErrorMessage(error));
     }
+  };
+
+  const handleEditProduct = (product) => {
+    setEditingProductId(product._id);
+    setProductForm({
+      productName: product.productName || "",
+      category: product.category || "",
+      price: String(product.price ?? ""),
+      quantity: String(product.quantity ?? ""),
+      image: null,
+      farmerId:
+        typeof product.farmerId === "object" ? product.farmerId?._id || "" : product.farmerId || "",
+    });
+    showInfo(`Editing ${product.productName}. Update the fields and save to sync the new stock details.`);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProductId("");
+    setProductForm(emptyProductForm);
   };
 
   if (!user) {
@@ -237,7 +247,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#0f766e_0%,#115e59_45%,#1f2937_100%)] p-8 text-white shadow-2xl">
+      <section className="surface-hero p-8">
         <p className="text-sm uppercase tracking-[0.35em] text-amber-200">
           {user.role} workspace
         </p>
@@ -320,7 +330,7 @@ export default function Dashboard() {
         <>
           <section
             className={`grid gap-4 ${
-              isFarmer ? "md:grid-cols-3 xl:grid-cols-6" : "md:grid-cols-4"
+              isFarmer ? "md:grid-cols-3 xl:grid-cols-5" : "md:grid-cols-4"
             }`}
           >
             <div className="rounded-2xl bg-white p-5 shadow">
@@ -342,15 +352,10 @@ export default function Dashboard() {
             {isFarmer ? (
               <>
                 <div className="rounded-2xl bg-white p-5 shadow">
-                  <p className="text-sm text-slate-500">Sales Earned</p>
-                  <p className="mt-2 text-3xl font-bold text-teal-700">
-                    {formatCurrency(farmerSalesSummary.revenue)}
-                  </p>
-                </div>
-                <div className="rounded-2xl bg-white p-5 shadow">
-                  <p className="text-sm text-slate-500">Quantity Sold</p>
-                  <p className="mt-2 text-3xl font-bold text-amber-600">
-                    {farmerSalesSummary.unitsSold}
+                  <p className="text-sm text-slate-500">Workspace</p>
+                  <p className="mt-2 text-2xl font-bold text-slate-900">Farmer tools</p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    Manage orders, inventory, and live products from this workspace.
                   </p>
                 </div>
               </>
@@ -421,14 +426,18 @@ export default function Dashboard() {
               </div>
             ) : null}
 
-            <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+            <div className="surface-panel p-6">
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-600">
                     Inventory
                   </p>
                   <h2 className="mt-2 text-2xl font-bold text-slate-900">
-                    {isAdmin ? "Add product for any farmer" : "Add your next product"}
+                    {editingProductId
+                      ? "Update stock details"
+                      : isAdmin
+                        ? "Add product for any farmer"
+                        : "Add your next product"}
                   </h2>
                 </div>
                 <Link
@@ -446,7 +455,7 @@ export default function Dashboard() {
                     onChange={(event) =>
                       setProductForm((current) => ({ ...current, farmerId: event.target.value }))
                     }
-                    className="w-full rounded-lg border p-2"
+                    className="select-field"
                     required
                   >
                     <option value="">Select farmer</option>
@@ -498,7 +507,7 @@ export default function Dashboard() {
                   <Input
                     type="file"
                     accept="image/*"
-                    required
+                    required={!editingProductId}
                     onChange={(event) =>
                       setProductForm((current) => ({
                         ...current,
@@ -510,15 +519,26 @@ export default function Dashboard() {
                     Upload a JPG, PNG, or other image file up to 5 MB.
                   </p>
                 </div>
-                <Button className="md:col-span-2 bg-[#b45309]" type="submit">
-                  Save Product
-                </Button>
+                <div className="md:col-span-2 flex flex-wrap gap-3">
+                  <Button className="bg-[#b45309]" type="submit">
+                    {editingProductId ? "Update Product" : "Save Product"}
+                  </Button>
+                  {editingProductId ? (
+                    <Button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="bg-slate-200 text-slate-800 hover:bg-slate-300"
+                    >
+                      Cancel
+                    </Button>
+                  ) : null}
+                </div>
               </form>
             </div>
           </section>
 
           <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+            <div className="surface-panel p-6">
               <div className="mb-5 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
@@ -535,7 +555,11 @@ export default function Dashboard() {
                 {products.map((product) => (
                   <div
                     key={product._id}
-                    className="flex flex-col gap-3 rounded-2xl border border-slate-100 p-4 md:flex-row md:items-center md:justify-between"
+                    className={`flex flex-col gap-3 rounded-2xl border p-4 md:flex-row md:items-center md:justify-between ${
+                      editingProductId === product._id
+                        ? "border-violet-300 bg-violet-50 ring-2 ring-violet-200"
+                        : "border-slate-100"
+                    }`}
                   >
                     <div>
                       <h3 className="font-semibold text-slate-900">{product.productName}</h3>
@@ -548,12 +572,24 @@ export default function Dashboard() {
                         </p>
                       ) : null}
                     </div>
-                    <Button
-                      onClick={() => handleDeleteProduct(product._id)}
-                      className="bg-rose-600 hover:bg-rose-700"
-                    >
-                      Delete
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        onClick={() => handleEditProduct(product)}
+                        className={`${
+                          editingProductId === product._id
+                            ? "bg-violet-700 hover:bg-violet-800"
+                            : "bg-violet-600 hover:bg-violet-700"
+                        }`}
+                      >
+                        {editingProductId === product._id ? "Editing" : "Edit"}
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteProduct(product._id)}
+                        className="bg-rose-600 hover:bg-rose-700"
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 ))}
 
@@ -566,7 +602,7 @@ export default function Dashboard() {
             </div>
 
             {isAdmin ? (
-              <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+              <div className="surface-panel p-6">
                 <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
                   Farmers
                 </p>

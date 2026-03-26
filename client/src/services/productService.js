@@ -32,3 +32,21 @@ export const deleteManagedProduct = async (productId) => {
   const { data } = await api.delete(`/farmer/products/${productId}`);
   return data;
 };
+
+export const updateManagedProduct = async (productId, payload) => {
+  const formData = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      formData.append(key, value);
+    }
+  });
+
+  const { data } = await api.put(`/farmer/products/${productId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return data;
+};

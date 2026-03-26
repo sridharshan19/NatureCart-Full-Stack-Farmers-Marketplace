@@ -186,7 +186,7 @@ export default function Orders() {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-[2rem] bg-[linear-gradient(135deg,#1f2937_0%,#0f766e_55%,#b45309_100%)] p-8 text-white shadow-2xl">
+      <section className="surface-hero p-8">
         <p className="text-sm uppercase tracking-[0.35em] text-amber-200">
           {user.role === "consumer" ? "Order tracking" : "Order review"}
         </p>
@@ -220,7 +220,7 @@ export default function Orders() {
             const reviewTargets = user.role === "consumer" ? getConsumerReviewTargets(order) : [];
 
             return (
-              <article key={order._id} className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+              <article key={order._id} className="surface-panel p-6">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-3">
@@ -383,7 +383,7 @@ export default function Orders() {
                                   }
                                   disabled={!target.canReview}
                                   placeholder="Write your experience with this farmer."
-                                  className="w-full rounded-2xl border border-[#d7d2c8] bg-[#fffaf4] p-3 text-slate-800 shadow-sm outline-none transition focus:border-[#0f766e] focus:ring-2 focus:ring-[#99f6e4] disabled:bg-slate-100"
+                                  className="text-area-field disabled:bg-slate-100"
                                 />
                                 <Button
                                   onClick={() => handleReviewSubmit(order._id, target.farmerId)}

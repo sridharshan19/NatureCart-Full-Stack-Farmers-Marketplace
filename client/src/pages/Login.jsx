@@ -44,7 +44,7 @@ export default function Login() {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-[2rem] border border-white/50 bg-white/95 p-8 shadow-2xl">
+    <div className="auth-shell max-w-md">
       <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Welcome back</p>
       <h2 className="mb-4 mt-3 text-3xl font-bold text-slate-900">Login</h2>
       <p className="mb-6 text-sm text-slate-600">

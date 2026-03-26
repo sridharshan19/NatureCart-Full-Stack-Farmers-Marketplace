@@ -10,6 +10,7 @@ import Checkout from "../pages/Checkout";
 import Orders from "../pages/Orders";
 import Reviews from "../pages/Reviews";
 import Dashboard from "../pages/Dashboard";
+import FarmerIncome from "../pages/FarmerIncome";
 import AdminDashboard from "../pages/AdminDashboard";
 import AdminAnalyticsPage from "../pages/AdminAnalyticsPage";
 import NotFound from "../pages/NotFound";
@@ -42,6 +43,9 @@ export default function AppRoutes() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/reviews" element={<Reviews />} />
         <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={[USER_ROLES.farmer]} />}>
+        <Route path="/income" element={<FarmerIncome />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={[USER_ROLES.admin]} />}>
         <Route path="/admin" element={<AdminDashboard />} />

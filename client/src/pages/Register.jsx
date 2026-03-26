@@ -91,7 +91,7 @@ export default function Register() {
   };
 
   return (
-    <div className="mx-auto max-w-xl rounded-[2rem] border border-white/50 bg-white/95 p-8 shadow-2xl">
+    <div className="auth-shell max-w-xl">
       <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Join NatureCart</p>
       <h1 className="mt-3 text-3xl font-bold text-slate-900">Create Account</h1>
       <p className="mt-3 text-sm text-slate-600">
@@ -102,7 +102,7 @@ export default function Register() {
         <select
           value={form.role}
           onChange={handleChange("role")}
-          className="w-full rounded-2xl border border-[#d7d2c8] bg-[#fffaf4] p-3 text-slate-800 shadow-sm outline-none transition focus:border-[#0f766e] focus:ring-2 focus:ring-[#99f6e4]"
+          className="select-field"
         >
           <option value="consumer">Consumer</option>
           <option value="farmer">Farmer</option>

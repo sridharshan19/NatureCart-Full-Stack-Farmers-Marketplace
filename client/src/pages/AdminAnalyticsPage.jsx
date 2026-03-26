@@ -256,10 +256,10 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[2rem] bg-[linear-gradient(135deg,#111827_0%,#0f766e_55%,#b45309_100%)] p-8 text-white shadow-2xl">
-        <p className="text-xs uppercase tracking-[0.35em] text-amber-200">Admin report</p>
+      <section className="soft-hero p-8 text-slate-900">
+        <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Admin report</p>
         <h1 className="mt-3 text-4xl font-bold">NatureCart analytics overview</h1>
-        <p className="mt-4 max-w-3xl text-sm text-slate-100/85">
+        <p className="mt-4 max-w-3xl text-sm text-slate-700">
           Review marketplace revenue, order movement, top products, and leading farmers
           using current order data from the backend.
         </p>
@@ -292,7 +292,7 @@ export default function AdminAnalyticsPage() {
         />
       </section>
 
-      <section className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+      <section className="surface-panel p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-amber-700">
@@ -309,19 +309,19 @@ export default function AdminAnalyticsPage() {
                 : "Once orders are placed, the best-selling item will appear here."}
             </p>
           </div>
-          <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,#0f766e_0%,#115e59_55%,#b45309_100%)] px-6 py-5 text-white shadow-lg">
-            <p className="text-xs uppercase tracking-[0.3em] text-amber-100">
+          <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,#d8f5e8_0%,#97d9be_52%,#ffd29a_100%)] px-6 py-5 text-slate-900 shadow-lg">
+            <p className="text-xs uppercase tracking-[0.3em] text-amber-700">
               Ranking view
             </p>
             <p className="mt-2 text-2xl font-black">
               {data.highestSoldProduct?.totalSold || 0}
             </p>
-            <p className="text-sm text-white/80">Top quantity sold across current filters</p>
+            <p className="text-sm text-slate-700">Top quantity sold across current filters</p>
           </div>
         </div>
       </section>
 
-      <section className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+      <section className="surface-panel p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Filter analytics</h2>
@@ -368,7 +368,7 @@ export default function AdminAnalyticsPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+        <div className="surface-panel p-6">
           <h2 className="text-2xl font-bold text-slate-900">Sales trend</h2>
           <p className="mt-2 text-sm text-slate-600">
             Daily order value based on MongoDB order history.
@@ -394,7 +394,7 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+        <div className="surface-panel p-6">
           <h2 className="text-2xl font-bold text-slate-900">Order status breakdown</h2>
           <p className="mt-2 text-sm text-slate-600">
             Track how many orders are pending, confirmed, and completed.
@@ -428,7 +428,7 @@ export default function AdminAnalyticsPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+        <div className="surface-panel p-6">
           <h2 className="text-2xl font-bold text-slate-900">Top products</h2>
           <p className="mt-2 text-sm text-slate-600">
             Best-selling products sorted from highest to lowest units sold.
@@ -460,7 +460,7 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        <div className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+        <div className="surface-panel p-6">
           <h2 className="text-2xl font-bold text-slate-900">Top farmers</h2>
           <p className="mt-2 text-sm text-slate-600">
             Farmers contributing the highest revenue through completed order items.
@@ -493,7 +493,7 @@ export default function AdminAnalyticsPage() {
         </div>
       </section>
 
-      <section className="rounded-[1.75rem] bg-white p-6 shadow-xl">
+      <section className="surface-panel p-6">
         <h2 className="text-2xl font-bold text-slate-900">Orders received</h2>
         <p className="mt-2 text-sm text-slate-600">
           {filters.date
