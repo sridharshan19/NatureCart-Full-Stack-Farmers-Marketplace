@@ -62,123 +62,6 @@ const UNIT_PRESETS = [
   { label: "piece (Per Piece)", value: "piece" },
 ];
 
-const ONLINE_PRODUCE_GALLERY = [
-  // Dry Fruits
-  { id: "dates", name: "Medjool Dates", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80" },
-  { id: "raisins", name: "Golden Raisins (Kishmish)", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=600&q=80" },
-  { id: "black-raisins", name: "Black Seedless Raisins", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=80" },
-  { id: "figs", name: "Dried Figs (Anjeer)", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1608797178974-15b35a64057b?auto=format&fit=crop&w=600&q=80" },
-  { id: "apricots", name: "Dried Apricots", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1595123550441-d377e017de6a?auto=format&fit=crop&w=600&q=80" },
-  { id: "cranberries", name: "Dried Cranberries", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?auto=format&fit=crop&w=600&q=80" },
-  { id: "prunes", name: "Dried Prunes (Plums)", category: "Dry Fruits", url: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=80" },
-
-  // Fresh Fruits
-  { id: "apple", name: "Red Apples", category: "Fruits", url: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=80" },
-  { id: "green-apple", name: "Green Apples", category: "Fruits", url: "https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?auto=format&fit=crop&w=600&q=80" },
-  { id: "banana", name: "Yellow Bananas", category: "Fruits", url: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80" },
-  { id: "orange", name: "Juicy Oranges", category: "Fruits", url: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=600&q=80" },
-  { id: "strawberry", name: "Fresh Strawberries", category: "Fruits", url: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=600&q=80" },
-  { id: "grapes", name: "Red Grapes", category: "Fruits", url: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=80" },
-  { id: "green-grapes", name: "Green Seedless Grapes", category: "Fruits", url: "https://images.unsplash.com/photo-1596368708356-6e1e1025ee72?auto=format&fit=crop&w=600&q=80" },
-  { id: "mango", name: "Sweet Mangoes", category: "Fruits", url: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80" },
-  { id: "watermelon", name: "Fresh Watermelon", category: "Fruits", url: "https://images.unsplash.com/photo-1587049352851-8d4e89133924?auto=format&fit=crop&w=600&q=80" },
-  { id: "muskmelon", name: "Muskmelon / Cantaloupe", category: "Fruits", url: "https://images.unsplash.com/photo-1591784918731-0df8549646b9?auto=format&fit=crop&w=600&q=80" },
-  { id: "lemon", name: "Fresh Lemons", category: "Fruits", url: "https://images.unsplash.com/photo-1534531141161-e4928950fb85?auto=format&fit=crop&w=600&q=80" },
-  { id: "lime", name: "Green Limes", category: "Fruits", url: "https://images.unsplash.com/photo-1590502593163-e8437651de3c?auto=format&fit=crop&w=600&q=80" },
-  { id: "peach", name: "Juicy Peaches", category: "Fruits", url: "https://images.unsplash.com/photo-1595123550441-d377e017de6a?auto=format&fit=crop&w=600&q=80" },
-  { id: "pineapple", name: "Ripe Pineapple", category: "Fruits", url: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&w=600&q=80" },
-  { id: "papaya", name: "Fresh Papaya", category: "Fruits", url: "https://images.unsplash.com/photo-1517260739337-6799d239ce83?auto=format&fit=crop&w=600&q=80" },
-  { id: "guava", name: "Organic Green Guava", category: "Fruits", url: "https://images.unsplash.com/photo-1536511135882-7efc9006fa10?auto=format&fit=crop&w=600&q=80" },
-  { id: "avocado", name: "Fresh Avocados", category: "Fruits", url: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=600&q=80" },
-  { id: "kiwi", name: "Organic Kiwis", category: "Fruits", url: "https://images.unsplash.com/photo-1585059819682-f11c86a34d71?auto=format&fit=crop&w=600&q=80" },
-  { id: "blueberry", name: "Fresh Blueberries", category: "Fruits", url: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?auto=format&fit=crop&w=600&q=80" },
-  { id: "raspberry", name: "Red Raspberries", category: "Fruits", url: "https://images.unsplash.com/photo-1577069861033-55d04ace4ef0?auto=format&fit=crop&w=600&q=80" },
-  { id: "blackberry", name: "Fresh Blackberries", category: "Fruits", url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" },
-  { id: "pomegranate", name: "Pomegranates", category: "Fruits", url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" },
-  { id: "dragonfruit", name: "Pink Dragonfruit", category: "Fruits", url: "https://images.unsplash.com/photo-1527325678964-549216468488?auto=format&fit=crop&w=600&q=80" },
-  { id: "coconut", name: "Fresh Tender Coconut", category: "Fruits", url: "https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=600&q=80" },
-
-  // Vegetables
-  { id: "tomato", name: "Organic Tomatoes", category: "Vegetables", url: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80" },
-  { id: "cherry-tomato", name: "Cherry Tomatoes", category: "Vegetables", url: "https://images.unsplash.com/photo-1561136594-7f68413baa99?auto=format&fit=crop&w=600&q=80" },
-  { id: "carrot", name: "Crisp Carrots", category: "Vegetables", url: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=600&q=80" },
-  { id: "potato", name: "Farm Potatoes", category: "Vegetables", url: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80" },
-  { id: "sweet-potato", name: "Sweet Potatoes", category: "Vegetables", url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80" },
-  { id: "broccoli", name: "Fresh Broccoli", category: "Vegetables", url: "https://images.unsplash.com/photo-1459411621453-7b03166349b9?auto=format&fit=crop&w=600&q=80" },
-  { id: "onion", name: "Red Onions", category: "Vegetables", url: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cf?auto=format&fit=crop&w=600&q=80" },
-  { id: "white-onion", name: "White Onions", category: "Vegetables", url: "https://images.unsplash.com/photo-1580148485250-0c5f516a8d67?auto=format&fit=crop&w=600&q=80" },
-  { id: "bell-pepper", name: "Red Bell Peppers", category: "Vegetables", url: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=600&q=80" },
-  { id: "green-pepper", name: "Green Bell Peppers", category: "Vegetables", url: "https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=600&q=80" },
-  { id: "yellow-pepper", name: "Yellow Bell Peppers", category: "Vegetables", url: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&fit=crop&w=600&q=80" },
-  { id: "cucumber", name: "Crisp Cucumbers", category: "Vegetables", url: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?auto=format&fit=crop&w=600&q=80" },
-  { id: "cauliflower", name: "White Cauliflower", category: "Vegetables", url: "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&w=600&q=80" },
-  { id: "pumpkin", name: "Organic Pumpkins", category: "Vegetables", url: "https://images.unsplash.com/photo-1506917728037-b6af01a7d403?auto=format&fit=crop&w=600&q=80" },
-  { id: "eggplant", name: "Fresh Eggplants / Brinjal", category: "Vegetables", url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" },
-  { id: "ginger", name: "Fresh Ginger Root", category: "Vegetables", url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" },
-  { id: "peas", name: "Green Garden Peas", category: "Vegetables", url: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=600&q=80" },
-  { id: "mushroom", name: "Button Mushrooms", category: "Vegetables", url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80" },
-  { id: "beetroot", name: "Fresh Beetroots", category: "Vegetables", url: "https://images.unsplash.com/photo-1593105544559-ecb03bf76f82?auto=format&fit=crop&w=600&q=80" },
-  { id: "radish", name: "Fresh White Radish", category: "Vegetables", url: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=600&q=80" },
-  { id: "chili", name: "Red Chili Peppers", category: "Vegetables", url: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80" },
-  { id: "green-chili", name: "Spicy Green Chilies", category: "Vegetables", url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" },
-
-  // Leafy Greens
-  { id: "spinach", name: "Garden Spinach (Palak)", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80" },
-  { id: "lettuce", name: "Green Crisp Lettuce", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&w=600&q=80" },
-  { id: "cabbage", name: "Green Cabbage", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&w=600&q=80" },
-  { id: "coriander", name: "Fresh Cilantro/Coriander", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1608797178974-15b35a64057b?auto=format&fit=crop&w=600&q=80" },
-  { id: "mint", name: "Fresh Mint Leaves (Pudina)", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?auto=format&fit=crop&w=600&q=80" },
-  { id: "methi", name: "Methi Leaves (Fenugreek)", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80" },
-  { id: "curry-leaves", name: "Fresh Curry Leaves", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1608797178974-15b35a64057b?auto=format&fit=crop&w=600&q=80" },
-  { id: "spring-onion", name: "Spring Onions", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cf?auto=format&fit=crop&w=600&q=80" },
-  { id: "kale", name: "Organic Green Kale", category: "Leafy Greens", url: "https://images.unsplash.com/photo-1524179091875-bf98a9a6ae67?auto=format&fit=crop&w=600&q=80" },
-
-  // Dairy & Honey
-  { id: "milk", name: "Farm Whole Milk", category: "Organic Dairy", url: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=600&q=80" },
-  { id: "butter", name: "Organic Farm Butter", category: "Organic Dairy", url: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80" },
-  { id: "ghee", name: "Pure Desi Ghee", category: "Organic Dairy", url: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80" },
-  { id: "cheese", name: "Artisanal Cheese", category: "Organic Dairy", url: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=600&q=80" },
-  { id: "paneer", name: "Fresh Cottage Cheese (Paneer)", category: "Organic Dairy", url: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80" },
-  { id: "yogurt", name: "Fresh Farm Yogurt", category: "Organic Dairy", url: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80" },
-  { id: "honey", name: "Pure Raw Honey", category: "Honey & Preserves", url: "https://images.unsplash.com/photo-1587049352847-81a56d773cae?auto=format&fit=crop&w=600&q=80" },
-  { id: "jam", name: "Fruit Preserves & Jam", category: "Honey & Preserves", url: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=600&q=80" },
-
-  // Grains & Cereals
-  { id: "corn", name: "Sweet Corn Cob", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80" },
-  { id: "wheat", name: "Whole Wheat Grains", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80" },
-  { id: "atta", name: "Whole Wheat Flour (Atta)", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80" },
-  { id: "rice", name: "White Basmati Rice", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80" },
-  { id: "brown-rice", name: "Whole Grain Brown Rice", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80" },
-  { id: "bajra", name: "Pearl Millet (Bajra)", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80" },
-  { id: "ragi", name: "Finger Millet (Ragi)", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80" },
-  { id: "oats", name: "Organic Rolled Oats", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1517093747-380236a2d9a3?auto=format&fit=crop&w=600&q=80" },
-  { id: "quinoa", name: "White Quinoa Seeds", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80" },
-  { id: "barley", name: "Organic Barley Grains", category: "Grains & Cereals", url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80" },
-
-  // Spices & Herbs
-  { id: "garlic", name: "Organic Garlic Bulbs", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?auto=format&fit=crop&w=600&q=80" },
-  { id: "basil", name: "Fresh Sweet Basil", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1608797178974-15b35a64057b?auto=format&fit=crop&w=600&q=80" },
-  { id: "turmeric", name: "Turmeric Powder", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" },
-  { id: "cinnamon", name: "Cinnamon Sticks", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-  { id: "cumin", name: "Cumin Seeds (Jeera)", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-  { id: "mustard-seeds", name: "Black Mustard Seeds (Rai)", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-  { id: "black-pepper", name: "Whole Peppercorns", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-  { id: "cardamom", name: "Green Cardamom Pods", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-  { id: "cloves", name: "Whole Cloves (Laung)", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-  { id: "coriander-seeds", name: "Coriander Seeds (Dhania)", category: "Spices & Herbs", url: "https://images.unsplash.com/photo-1509358271058-acd05cc93898?auto=format&fit=crop&w=600&q=80" },
-
-  // Nuts & Seeds
-  { id: "almonds", name: "Raw Organic Almonds", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1508061252966-dfd30f67ea55?auto=format&fit=crop&w=600&q=80" },
-  { id: "walnut", name: "Shelled Walnuts", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80" },
-  { id: "cashew", name: "Raw Cashew Nuts", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=600&q=80" },
-  { id: "pista", name: "Pistachio Nuts (Pista)", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1508061252966-dfd30f67ea55?auto=format&fit=crop&w=600&q=80" },
-  { id: "sunflower-seed", name: "Sunflower Seeds", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=600&q=80" },
-  { id: "pumpkin-seed", name: "Raw Pumpkin Seeds", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=600&q=80" },
-  { id: "chia-seeds", name: "Organic Chia Seeds", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=600&q=80" },
-  { id: "flax-seeds", name: "Flax Seeds (Alsi)", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=600&q=80" },
-  { id: "sesame-seeds", name: "White Sesame Seeds (Til)", category: "Nuts & Seeds", url: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=600&q=80" },
-];
-
 export default function Dashboard() {
   const user = getStoredUser();
   const userId = user?._id || user?.id || "";
@@ -193,26 +76,14 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [farmerForm, setFarmerForm] = useState(emptyFarmerForm);
   const [productForm, setProductForm] = useState(emptyProductForm);
-  const [imageMode, setImageMode] = useState("upload");
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [editingProductId, setEditingProductId] = useState("");
-  const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [inventorySearch, setInventorySearch] = useState("");
   const [stockStatusFilter, setStockStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const { showError, showInfo, showSuccess } = useToast();
-
-  const filteredGalleryImages = useMemo(() => {
-    if (!imageSearchQuery.trim()) return ONLINE_PRODUCE_GALLERY;
-    const q = imageSearchQuery.toLowerCase().trim();
-    return ONLINE_PRODUCE_GALLERY.filter(
-      (item) =>
-        item.name.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-    );
-  }, [imageSearchQuery]);
 
   const inventorySummary = useMemo(() => {
     let totalValuation = 0;
@@ -377,7 +248,7 @@ export default function Dashboard() {
 
     const hasImage = Boolean(productForm.image || productForm.imageUrl || editingProductId);
     if (!hasImage) {
-      showError("Please upload a produce image or select a photo from the gallery.");
+      showError("Please upload a produce image.");
       return;
     }
 
@@ -847,199 +718,58 @@ export default function Dashboard() {
                   </select>
                 </div>
 
-                {/* Produce Image Section with Upload / Online URL Mode Switcher */}
+                {/* Produce Image Section with Drag & Drop / File Upload */}
                 <div className="md:col-span-2 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                      Product Image
-                    </label>
-                    <div className="flex rounded-full bg-slate-100 p-0.5 border border-slate-200">
-                      <button
-                        type="button"
-                        onClick={() => setImageMode("upload")}
-                        className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                          imageMode === "upload"
-                            ? "bg-amber-700 text-white shadow"
-                            : "text-slate-600 hover:text-slate-900"
-                        }`}
-                      >
-                        📁 File Upload / Drag & Drop
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setImageMode("url")}
-                        className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                          imageMode === "url"
-                            ? "bg-amber-700 text-white shadow"
-                            : "text-slate-600 hover:text-slate-900"
-                        }`}
-                      >
-                        🖼️ Online Photo Gallery
-                      </button>
-                    </div>
-                  </div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                    Product Image (File Upload / Drag & Drop)
+                  </label>
 
-                  {imageMode === "upload" ? (
-                    <div
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      className={`drag-drop-zone ${isDragOver ? "active" : ""}`}
-                    >
-                      <input
-                        type="file"
-                        id="image-file-input"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleImageFileSelect(e.target.files?.[0])}
-                      />
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    className={`drag-drop-zone ${isDragOver ? "active" : ""}`}
+                  >
+                    <input
+                      type="file"
+                      id="image-file-input"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageFileSelect(e.target.files?.[0])}
+                    />
 
-                      {imagePreview ? (
-                        <div className="flex items-center gap-4 text-left w-full">
-                          <img
-                            src={imagePreview}
-                            alt="Preview"
-                            className="h-20 w-20 rounded-xl object-cover border border-slate-200 shadow"
-                          />
-                          <div className="flex-1">
-                            <p className="text-xs font-bold text-emerald-800">✓ Image Loaded Successfully</p>
-                            <p className="text-[11px] text-slate-500 mt-0.5 truncate max-w-xs">
-                              {productForm.image?.name || "Selected product image"}
-                            </p>
-                            <label
-                              htmlFor="image-file-input"
-                              className="mt-2 inline-block rounded-full bg-slate-200 hover:bg-slate-300 px-3 py-1 text-[10px] font-bold text-slate-800 cursor-pointer transition"
-                            >
-                              Change Image
-                            </label>
-                          </div>
-                        </div>
-                      ) : (
-                        <label htmlFor="image-file-input" className="w-full cursor-pointer">
-                          <span className="text-3xl">📸</span>
-                          <p className="mt-2 text-sm font-bold text-slate-800">
-                            Drag & Drop Produce Image Here
+                    {imagePreview ? (
+                      <div className="flex items-center gap-4 text-left w-full">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="h-20 w-20 rounded-xl object-cover border border-slate-200 shadow"
+                        />
+                        <div className="flex-1">
+                          <p className="text-xs font-bold text-emerald-800">✓ Image Loaded Successfully</p>
+                          <p className="text-[11px] text-slate-500 mt-0.5 truncate max-w-xs">
+                            {productForm.image?.name || "Selected product image"}
                           </p>
-                          <p className="mt-1 text-xs text-slate-500">
-                            or <span className="text-amber-700 underline font-semibold">browse computer files</span> (JPG, PNG, WEBP up to 5MB)
-                          </p>
-                        </label>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-4 rounded-2xl border border-slate-200 bg-[#fffaf4] p-4">
-                      {/* Search Bar */}
-                      <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                            🔍 Search Produce Photo Gallery
-                          </label>
-                          <span className="text-[11px] font-bold text-amber-700">
-                            {filteredGalleryImages.length} Produce Photos Available
-                          </span>
-                        </div>
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
-                            🔍
-                          </span>
-                          <Input
-                            type="text"
-                            placeholder="Type to search photo (e.g. Tomato, Carrot, Milk, Honey, Apple, Green)..."
-                            value={imageSearchQuery}
-                            onChange={(e) => setImageSearchQuery(e.target.value)}
-                            className="pl-9 pr-8 bg-white border-slate-300 font-medium text-xs"
-                          />
-                          {imageSearchQuery ? (
-                            <button
-                              type="button"
-                              onClick={() => setImageSearchQuery("")}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-700"
-                            >
-                              ✕
-                            </button>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      {/* Produce Thumbnail Gallery Grid */}
-                      <div>
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                          Click a photo to select & auto-fill URL:
-                        </p>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-56 overflow-y-auto pr-1">
-                          {filteredGalleryImages.map((img) => {
-                            const isSelected = productForm.imageUrl === img.url;
-                            return (
-                              <button
-                                key={img.id}
-                                type="button"
-                                onClick={() =>
-                                  setProductForm((curr) => ({ ...curr, imageUrl: img.url }))
-                                }
-                                className={`group relative flex flex-col items-center overflow-hidden rounded-xl border p-1.5 transition text-left ${
-                                  isSelected
-                                    ? "border-emerald-600 bg-emerald-50 ring-2 ring-emerald-400 shadow-md"
-                                    : "border-slate-200 bg-white hover:border-amber-500 hover:bg-amber-50/60"
-                                }`}
-                              >
-                                <img
-                                  src={img.url}
-                                  alt={img.name}
-                                  className="h-16 w-full object-cover rounded-lg transition duration-300 group-hover:scale-105"
-                                  onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80";
-                                  }}
-                                />
-                                <div className="mt-1 w-full flex items-center justify-between text-[11px]">
-                                  <span className="font-bold text-slate-800 truncate">{img.name}</span>
-                                  {isSelected ? (
-                                    <span className="text-[10px] font-black text-emerald-700 shrink-0">✓</span>
-                                  ) : null}
-                                </div>
-                              </button>
-                            );
-                          })}
-
-                          {!filteredGalleryImages.length ? (
-                            <div className="col-span-full py-4 text-center text-xs text-slate-500">
-                              No produce photos match &quot;{imageSearchQuery}&quot;. Clear search to view all farm photos.
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      {/* Selected Produce Photo Live Preview */}
-                      {productForm.imageUrl ? (
-                        <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-200">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={productForm.imageUrl}
-                              alt="Online Preview"
-                              className="h-16 w-16 rounded-xl object-cover border-2 border-emerald-500 shadow-md"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80";
-                              }}
-                            />
-                            <div>
-                              <p className="text-xs font-bold text-emerald-800">✓ Selected Produce Photo</p>
-                              <p className="text-[11px] text-slate-500 font-medium">
-                                Ready to publish with listing
-                              </p>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setProductForm((curr) => ({ ...curr, imageUrl: "" }))}
-                            className="rounded-full bg-slate-200 hover:bg-rose-100 hover:text-rose-700 px-3 py-1 text-xs font-bold text-slate-700 transition"
+                          <label
+                            htmlFor="image-file-input"
+                            className="mt-2 inline-block rounded-full bg-slate-200 hover:bg-slate-300 px-3 py-1 text-[10px] font-bold text-slate-800 cursor-pointer transition"
                           >
-                            Unselect
-                          </button>
+                            Change Image
+                          </label>
                         </div>
-                      ) : null}
-                    </div>
-                  )}
+                      </div>
+                    ) : (
+                      <label htmlFor="image-file-input" className="w-full cursor-pointer">
+                        <span className="text-3xl">📸</span>
+                        <p className="mt-2 text-sm font-bold text-slate-800">
+                          Drag & Drop Produce Image Here
+                        </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          or <span className="text-amber-700 underline font-semibold">browse computer files</span> (JPG, PNG, WEBP up to 5MB)
+                        </p>
+                      </label>
+                    )}
+                  </div>
                 </div>
 
                 <div className="md:col-span-2 flex flex-wrap gap-3 pt-2">
