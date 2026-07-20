@@ -6,7 +6,7 @@ const app = express();
 const errorHandler = require("./middleware/errorMiddleware");
 const requestLogger = require("./middleware/requestLogger");
 const allowedOrigins = (process.env.CLIENT_ORIGIN ||
-  "http://localhost:5173,http://127.0.0.1:5173")
+  "http://localhost:5173,https://nature-cart-full-stack-farmers-marketplace-dgb4-zmevuiud1.vercel.app")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
