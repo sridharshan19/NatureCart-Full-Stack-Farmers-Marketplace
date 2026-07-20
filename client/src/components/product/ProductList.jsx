@@ -1,6 +1,6 @@
 import ProductCard from "./ProductCard";
 
-export default function ProductList({ products, onAdd, actionLabel }) {
+export default function ProductList({ products, onAdd, onQuickView, actionLabel }) {
   if (!products.length) {
     return (
       <div className="section-card rounded-[1.6rem] p-8 text-center">
@@ -16,9 +16,11 @@ export default function ProductList({ products, onAdd, actionLabel }) {
           key={product._id}
           product={product}
           onAdd={onAdd}
+          onQuickView={onQuickView}
           actionLabel={actionLabel}
         />
       ))}
     </div>
   );
 }
+

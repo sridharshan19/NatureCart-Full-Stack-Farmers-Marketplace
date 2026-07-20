@@ -1,4 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import AnalyticsCard from "../components/AnalyticsCard";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
@@ -9,6 +20,8 @@ import {
 } from "../services/analyticsService";
 import { getFarmers } from "../services/authService";
 import { formatCurrency, getErrorMessage } from "../utils/helpers";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const getMaxValue = (items, field) =>
   Math.max(...items.map((item) => Number(item[field] || 0)), 1);
@@ -21,14 +34,14 @@ const ProgressRow = ({ label, value, maxValue, helper, tone = "teal" }) => {
   };
 
   return (
-    <div className="space-y-2 rounded-2xl bg-slate-50 p-4">
+    <div className="space-y-2 rounded-2xl bg-slate-50 p-4 transition-all hover:shadow-md border border-slate-100">
       <div className="flex items-center justify-between gap-4">
         <p className="font-semibold text-slate-900">{label}</p>
         <p className="text-sm text-slate-500">{helper}</p>
       </div>
       <div className="h-3 rounded-full bg-slate-200">
         <div
-          className={`h-3 rounded-full ${toneMap[tone] || toneMap.teal}`}
+          className={`h-3 rounded-full ${toneMap[tone] || toneMap.teal} transition-all duration-500`}
           style={{ width: `${Math.max((Number(value || 0) / maxValue) * 100, 8)}%` }}
         />
       </div>
@@ -36,110 +49,106 @@ const ProgressRow = ({ label, value, maxValue, helper, tone = "teal" }) => {
   );
 };
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-white/60 bg-white/95 p-3 shadow-xl backdrop-blur text-sm">
+        <p className="font-bold text-slate-800">{label}</p>
+        <p className="text-[#1f7a5c] font-semibold">
+          Sales: {formatCurrency(payload[0].value)}
+        </p>
+        {payload[0].payload.totalOrders !== undefined && (
+          <p className="text-slate-500">
+            Orders: {payload[0].payload.totalOrders}
+          </p>
+        )}
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomBarTooltip = ({ active, payload, label, formatter }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-white/60 bg-white/95 p-3 shadow-xl backdrop-blur text-sm">
+        <p className="font-bold text-slate-800">{label}</p>
+        <p className="text-[#bf6c2f] font-semibold">
+          {formatter ? formatter(payload[0].value) : payload[0].value}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const MiniLineChart = ({ data }) => {
-  if (!data.length) {
+  if (!data || !data.length) {
     return <p className="text-sm text-slate-500">No sales trend data found.</p>;
   }
 
-  const width = 640;
-  const height = 240;
-  const padding = 28;
-  const maxValue = Math.max(...data.map((item) => Number(item.totalSales || 0)), 1);
-
-  const points = data
-    .map((item, index) => {
-      const x =
-        padding +
-        (index * (width - padding * 2)) / Math.max(data.length - 1, 1);
-      const y =
-        height -
-        padding -
-        (Number(item.totalSales || 0) / maxValue) * (height - padding * 2);
-      return `${x},${y}`;
-    })
-    .join(" ");
+  const chartData = data.map((item) => ({
+    name: item._id,
+    sales: item.totalSales || 0,
+    totalOrders: item.totalOrders || 0,
+  }));
 
   return (
-    <div className="rounded-[1.5rem] bg-slate-50 p-4">
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
-        <line
-          x1={padding}
-          y1={height - padding}
-          x2={width - padding}
-          y2={height - padding}
-          stroke="#cbd5e1"
-          strokeWidth="2"
-        />
-        <line
-          x1={padding}
-          y1={padding}
-          x2={padding}
-          y2={height - padding}
-          stroke="#cbd5e1"
-          strokeWidth="2"
-        />
-        <polyline
-          fill="none"
-          stroke="#0f766e"
-          strokeWidth="4"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          points={points}
-        />
-        {data.map((item, index) => {
-          const x =
-            padding +
-            (index * (width - padding * 2)) / Math.max(data.length - 1, 1);
-          const y =
-            height -
-            padding -
-            (Number(item.totalSales || 0) / maxValue) * (height - padding * 2);
-
-          return (
-            <g key={item._id}>
-              <circle cx={x} cy={y} r="5" fill="#b45309" />
-              <text
-                x={x}
-                y={height - 8}
-                textAnchor="middle"
-                fontSize="11"
-                fill="#475569"
-              >
-                {item._id}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+    <div className="h-64 w-full rounded-[1.5rem] bg-slate-50 p-4 border border-slate-100">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <defs>
+            <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#1f7a5c" stopOpacity={0.25} />
+              <stop offset="95%" stopColor="#1f7a5c" stopOpacity={0.01} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+          <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} />
+          <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+          <Tooltip content={<CustomTooltip />} />
+          <Area
+            type="monotone"
+            dataKey="sales"
+            stroke="#1f7a5c"
+            strokeWidth={3}
+            fillOpacity={1}
+            fill="url(#colorSales)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 };
 
 const MiniBarChart = ({ data, labelKey, valueKey, formatter, barTone = "bg-teal-600" }) => {
-  if (!data.length) {
+  if (!data || !data.length) {
     return <p className="text-sm text-slate-500">No chart data found.</p>;
   }
 
-  const maxValue = Math.max(...data.map((item) => Number(item[valueKey] || 0)), 1);
+  const toneMap = {
+    "bg-teal-600": "#0d9488",
+    "bg-amber-500": "#f59e0b",
+    "bg-slate-700": "#334155",
+  };
+  const fillColor = toneMap[barTone] || barTone;
+
+  const chartData = data.map((item) => ({
+    name: item[labelKey],
+    value: item[valueKey] || 0,
+  }));
 
   return (
-    <div className="space-y-3 rounded-[1.5rem] bg-slate-50 p-4">
-      {data.map((item) => (
-        <div key={`${item[labelKey]}-${item[valueKey]}`} className="space-y-2">
-          <div className="flex items-center justify-between gap-4 text-sm">
-            <p className="font-semibold text-slate-900">{item[labelKey]}</p>
-            <p className="text-slate-500">{formatter(item[valueKey])}</p>
-          </div>
-          <div className="h-4 rounded-full bg-slate-200">
-            <div
-              className={`h-4 rounded-full ${barTone}`}
-              style={{
-                width: `${Math.max((Number(item[valueKey] || 0) / maxValue) * 100, 8)}%`,
-              }}
-            />
-          </div>
-        </div>
-      ))}
+    <div className="h-64 w-full rounded-[1.5rem] bg-slate-50 p-4 border border-slate-100">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+          <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} />
+          <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+          <Tooltip content={<CustomBarTooltip formatter={formatter} />} />
+          <Bar dataKey="value" fill={fillColor} radius={[6, 6, 0, 0]} maxBarSize={48} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 };
@@ -185,7 +194,7 @@ export default function AdminAnalyticsPage() {
     };
 
     bootstrap();
-  }, []);
+  }, [filters]);
 
   const topProductMax = useMemo(
     () => getMaxValue(data?.topProducts || [], "totalSold"),
@@ -219,6 +228,198 @@ export default function AdminAnalyticsPage() {
       setMessage(getErrorMessage(error));
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadPdf = () => {
+    if (!data) return;
+
+    try {
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const dateSuffix = filters.date || new Date().toISOString().slice(0, 10);
+      const filename = `naturecart-analytics-report-${dateSuffix}.pdf`;
+
+      const addHeaderFooter = (pdfDoc) => {
+        const totalPages = pdfDoc.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+          pdfDoc.setPage(i);
+
+          // Header
+          pdfDoc.setFont("Helvetica", "bold");
+          pdfDoc.setFontSize(9);
+          pdfDoc.setTextColor(15, 118, 110); // Teal
+          pdfDoc.text("NC NATURECART", 15, 12);
+          
+          pdfDoc.setFont("Helvetica", "normal");
+          pdfDoc.setTextColor(100, 116, 139); // Slate-500
+          pdfDoc.text("Fresh Trade, Clear Operations", 45, 12);
+          pdfDoc.setLineWidth(0.2);
+          pdfDoc.setDrawColor(226, 232, 240); // border-slate-200
+          pdfDoc.line(15, 15, 195, 15);
+
+          // Footer
+          pdfDoc.line(15, 280, 195, 280);
+          pdfDoc.setFontSize(8);
+          pdfDoc.setTextColor(100, 116, 139);
+          pdfDoc.text("NatureCart - Fresh Trade, Clear Operations", 15, 285);
+          pdfDoc.text(`Page ${i} of ${totalPages}`, 175, 285);
+        }
+      };
+
+      // Page 1 Content
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(22);
+      doc.setTextColor(15, 23, 42); // slate-900
+      doc.text("NatureCart Analytics Report", 15, 28);
+
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105); // slate-600
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 15, 34);
+
+      // Filters
+      const dateText = filters.date ? `Date Filter: ${filters.date}` : "Date Filter: All Dates";
+      let farmerText = "Farmer Filter: All Farmers";
+      if (filters.farmerId && farmers.length) {
+        const matching = farmers.find((f) => f._id === filters.farmerId);
+        if (matching) {
+          farmerText = `Farmer Filter: ${matching.farmName || matching.name}`;
+        }
+      }
+      doc.setFont("Helvetica", "normal");
+      doc.text(`${dateText}  |  ${farmerText}`, 15, 39);
+
+      // Summary Title
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(15, 118, 110); // Teal
+      doc.text("Executive Summary", 15, 48);
+      
+      // Summary Box Background
+      doc.setDrawColor(241, 245, 249);
+      doc.setFillColor(248, 250, 252); // slate-50
+      doc.rect(15, 52, 180, 24, "F");
+
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(71, 85, 105);
+      
+      doc.text("Total Revenue", 20, 58);
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      doc.text(formatCurrency(data.revenue || 0), 20, 64);
+
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(71, 85, 105);
+      doc.text("Total Orders", 70, 58);
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      doc.text(String(data.totalOrders || 0), 70, 64);
+
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(71, 85, 105);
+      doc.text("Top Selling Product", 115, 58);
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(15, 23, 42);
+      const topProdStr = `${data.highestSoldProduct?.name || "N/A"} (${data.highestSoldProduct?.totalSold || 0} units)`;
+      doc.text(topProdStr, 115, 64);
+
+      let currentY = 86;
+
+      // Table 1: Top Products
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(15, 118, 110);
+      doc.text("Top Products by Sales Volume", 15, currentY);
+      currentY += 4;
+
+      autoTable(doc, {
+        startY: currentY,
+        head: [["Rank", "Product Name", "Total Units Sold", "Gross Revenue"]],
+        body: (data.topProducts || []).map((prod, index) => [
+          index + 1,
+          prod._id,
+          prod.totalSold,
+          formatCurrency(prod.totalRevenue),
+        ]),
+        theme: "striped",
+        headStyles: { fillColor: [15, 118, 110] },
+        styles: { fontSize: 8.5 },
+        margin: { left: 15, right: 15 },
+      });
+
+      currentY = doc.lastAutoTable.finalY + 12;
+
+      // Table 2: Top Farmers
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(15, 118, 110);
+      doc.text("Top Farmer Partners", 15, currentY);
+      currentY += 4;
+
+      autoTable(doc, {
+        startY: currentY,
+        head: [["Rank", "Farmer Name", "Email Address", "Units Sold", "Total Revenue"]],
+        body: (data.topFarmers || []).map((farmer, index) => [
+          index + 1,
+          farmer.name,
+          farmer.email,
+          farmer.totalUnits,
+          formatCurrency(farmer.totalRevenue),
+        ]),
+        theme: "striped",
+        headStyles: { fillColor: [15, 118, 110] },
+        styles: { fontSize: 8.5 },
+        margin: { left: 15, right: 15 },
+      });
+
+      // Add a page break for orders
+      doc.addPage();
+      currentY = 24;
+
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(15, 118, 110);
+      doc.text("Recent Customer Orders Received", 15, currentY);
+      currentY += 4;
+
+      autoTable(doc, {
+        startY: currentY,
+        head: [["Order ID", "Consumer", "Email", "Pickup Coordinates", "Status", "Amount", "Items"]],
+        body: (data.ordersReceived || []).map((o) => [
+          `#${o._id.slice(-8)}`,
+          o.consumerId?.name || "Unknown",
+          o.consumerId?.email || "",
+          `${o.pickupDate} ${o.pickupTime}`,
+          o.status,
+          formatCurrency(o.totalAmount),
+          (o.products || []).map((p) => `${p.productName} (x${p.quantity})`).join(", "),
+        ]),
+        theme: "striped",
+        headStyles: { fillColor: [15, 118, 110] },
+        styles: { fontSize: 7.5 },
+        columnStyles: {
+          6: { cellWidth: 45 }
+        },
+        margin: { left: 15, right: 15 },
+      });
+
+      // Apply headers and footers to all pages
+      addHeaderFooter(doc);
+
+      doc.save(filename);
+    } catch (err) {
+      setMessage("Failed to generate PDF: " + getErrorMessage(err));
     }
   };
 
@@ -263,12 +464,20 @@ export default function AdminAnalyticsPage() {
           Review marketplace revenue, order movement, top products, and leading farmers
           using current order data from the backend.
         </p>
-        <Button
-          onClick={handleDownloadCsv}
-          className="mt-6 bg-white !text-slate-900 hover:!bg-slate-100"
-        >
-          {downloading ? "Downloading CSV..." : "Download CSV Report"}
-        </Button>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button
+            onClick={handleDownloadCsv}
+            className="bg-white !text-slate-900 hover:!bg-slate-100"
+          >
+            {downloading ? "Downloading CSV..." : "Download CSV Report"}
+          </Button>
+          <Button
+            onClick={handleDownloadPdf}
+            className="bg-[#0f766e] text-white hover:bg-[#0d6e58]"
+          >
+            Download PDF Report
+          </Button>
+        </div>
       </section>
 
       <section className="grid gap-5 md:grid-cols-3">

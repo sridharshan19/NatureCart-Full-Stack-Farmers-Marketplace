@@ -5,7 +5,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}", // important
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Plus Jakarta Sans", "Avenir Next", "Segoe UI", "sans-serif"],
+        serif: ["Fraunces", "Iowan Old Style", "Palatino Linotype", "serif"],
+      },
+    },
   },
   plugins: [],
 }

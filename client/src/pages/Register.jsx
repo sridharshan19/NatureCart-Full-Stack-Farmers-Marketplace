@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 import { useToast } from "../components/common/ToastProvider";
@@ -91,83 +91,92 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-shell max-w-xl">
-      <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Join NatureCart</p>
-      <h1 className="mt-3 text-3xl font-bold text-slate-900">Create Account</h1>
-      <p className="mt-3 text-sm text-slate-600">
-        Register as a consumer or farmer using the same role contract as the backend.
-      </p>
+    <div className="flex min-h-[calc(100vh-14rem)] items-center justify-center py-6 px-4">
+      <div className="grid gap-6 lg:grid-cols-[1.1fr_1.20fr] max-w-5xl w-full mx-auto">
+        
+        {/* Left Side: About Website Card (Only Displays Info About Website) */}
+        <div className="rounded-[2rem] bg-[linear-gradient(135deg,#0d4f40_0%,#0f6e58_46%,#bf6c2f_100%)] p-8 text-white flex flex-col justify-between shadow-2xl">
+          <div>
+            <span className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200">
+              Direct-to-Farm Marketplace
+            </span>
+            <h2 className="text-4xl font-bold font-serif mt-6 leading-tight">
+              Sourcing Fresh, Organic Produce From Local Regional Farms
+            </h2>
+            <p className="text-sm mt-4 text-emerald-50/80 leading-relaxed">
+              NatureCart connects conscious consumers directly with certified regional producers. We bring transparency to community trade, supporting local farming operations with simple coordination, clear seller ownership, and secure scheduled harvests.
+            </p>
+          </div>
+          <div className="mt-8 border-t border-white/20 pt-6">
+            <p className="text-xs uppercase tracking-wider text-amber-200/90 font-semibold">Our Values</p>
+            <div className="flex gap-4 mt-3 text-xs text-emerald-50/90">
+              <div>🌽 Direct Trade</div>
+              <div>🌿 Verified Organic</div>
+              <div>📍 Local Pickup</div>
+            </div>
+          </div>
+        </div>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-3">
-        <select
-          value={form.role}
-          onChange={handleChange("role")}
-          className="select-field"
-        >
-          <option value="consumer">Consumer</option>
-          <option value="farmer">Farmer</option>
-        </select>
+        {/* Right Side: Register Form Shell */}
+        <div className="auth-shell w-full shadow-2xl border border-slate-100 flex flex-col justify-center p-8">
+          <p className="text-xs uppercase tracking-[0.35em] text-amber-700 font-semibold">Join NatureCart</p>
+          <h1 className="mb-4 mt-3 text-3xl font-bold text-slate-900 font-serif">Create Account</h1>
+          <p className="mb-6 text-sm text-slate-550">
+            Fill in your details to create a consumer account and start ordering fresh produce.
+          </p>
 
-        <Input
-          placeholder="Name"
-          autoComplete="name"
-          required
-          value={form.name}
-          onChange={handleChange("name")}
-        />
-        <Input
-          type="email"
-          placeholder="Email"
-          autoComplete="email"
-          required
-          value={form.email}
-          onChange={handleChange("email")}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          autoComplete="new-password"
-          required
-          value={form.password}
-          onChange={handleChange("password")}
-        />
-        <Input
-          placeholder="Phone"
-          autoComplete="tel"
-          required
-          value={form.phone}
-          onChange={handleChange("phone")}
-        />
-
-        {form.role === "consumer" ? (
-          <Input
-            placeholder="Address"
-            autoComplete="street-address"
-            required
-            value={form.address}
-            onChange={handleChange("address")}
-          />
-        ) : (
-          <>
+          <form onSubmit={handleSubmit} className="space-y-3">
             <Input
-              placeholder="Farm Name"
+              placeholder="Full Name"
+              autoComplete="name"
               required
-              value={form.farmName}
-              onChange={handleChange("farmName")}
+              value={form.name}
+              onChange={handleChange("name")}
             />
             <Input
-              placeholder="Location"
+              type="email"
+              placeholder="Email address"
+              autoComplete="email"
               required
-              value={form.location}
-              onChange={handleChange("location")}
+              value={form.email}
+              onChange={handleChange("email")}
             />
-          </>
-        )}
+            <Input
+              type="password"
+              placeholder="Password"
+              autoComplete="new-password"
+              required
+              value={form.password}
+              onChange={handleChange("password")}
+            />
+            <Input
+              placeholder="Phone number"
+              autoComplete="tel"
+              required
+              value={form.phone}
+              onChange={handleChange("phone")}
+            />
+            <Input
+              placeholder="Pickup Coordinates / Delivery Address"
+              autoComplete="street-address"
+              required
+              value={form.address}
+              onChange={handleChange("address")}
+            />
 
-        <Button className="w-full" type="submit">
-          {loading ? "Creating Account..." : "Register"}
-        </Button>
-      </form>
+            <Button className="w-full bg-[linear-gradient(135deg,#1f7a5c_0%,#bf6c2f_100%)] mt-4" type="submit">
+              {loading ? "Creating Account..." : "Register"}
+            </Button>
+          </form>
+
+          <div className="mt-5 flex items-center justify-between text-sm border-t border-slate-150 pt-4">
+            <span className="text-slate-500">Already have an account?</span>
+            <Link to="/login" className="font-semibold text-[#0f766e] hover:underline">
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

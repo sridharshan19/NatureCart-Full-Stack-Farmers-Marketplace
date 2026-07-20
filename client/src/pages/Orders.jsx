@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "../components/common/Button";
 import Loader from "../components/common/Loader";
 import { useToast } from "../components/common/ToastProvider";
@@ -9,6 +9,7 @@ import {
 } from "../services/orderService";
 import { createReview, getReviews } from "../services/reviewService";
 import { formatCurrency, getErrorMessage, getStoredUser } from "../utils/helpers";
+import { generateOrderInvoice } from "../utils/invoiceGenerator";
 
 const statusStyles = {
   pending: "bg-amber-100 text-amber-700",
@@ -46,10 +47,13 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [submittingReviewKey, setSubmittingReviewKey] = useState("");
   const [reviewDrafts, setReviewDrafts] = useState({});
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [orderSearch, setOrderSearch] = useState("");
   const { showError, showSuccess } = useToast();
 
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
     try {
+      setLoading(true);
       const requests = [
         user?.role === "consumer" ? getConsumerOrders() : getFarmerOrders(),
       ];
@@ -59,14 +63,14 @@ export default function Orders() {
       }
 
       const [orderData, reviewData] = await Promise.all(requests);
-      setOrders(orderData);
+      setOrders(orderData || []);
       setReviews(reviewData || []);
     } catch (error) {
       showError(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.role, showError]);
 
   useEffect(() => {
     if (user?.role === "consumer" || user?.role === "farmer" || user?.role === "admin") {
@@ -74,7 +78,27 @@ export default function Orders() {
     } else {
       setLoading(false);
     }
-  }, [user?.role]);
+  }, [user?.role, loadOrders]);
+
+  const filteredOrders = useMemo(() => {
+    return orders.filter((order) => {
+      const currentStatus = order.scopedStatus || order.status;
+      const matchesStatus =
+        statusFilter === "all" || currentStatus.toLowerCase() === statusFilter.toLowerCase();
+
+      const searchLower = orderSearch.trim().toLowerCase();
+      const matchesSearch =
+        !searchLower ||
+        order._id?.toLowerCase().includes(searchLower) ||
+        order.consumerId?.name?.toLowerCase().includes(searchLower) ||
+        order.consumerId?.email?.toLowerCase().includes(searchLower) ||
+        (order.products || []).some((p) =>
+          p.productName?.toLowerCase().includes(searchLower)
+        );
+
+      return matchesStatus && matchesSearch;
+    });
+  }, [orders, statusFilter, orderSearch]);
 
   const handleStatusUpdate = async (orderId, status) => {
     try {
@@ -184,38 +208,89 @@ export default function Orders() {
     );
   }
 
+  const heroThemeClass =
+    user.role === "farmer"
+      ? "hero-farmer"
+      : user.role === "admin"
+      ? "hero-admin"
+      : "hero-consumer";
+
   return (
     <div className="space-y-5">
-      <section className="surface-hero p-8">
-        <p className="text-sm uppercase tracking-[0.35em] text-amber-200">
-          {user.role === "consumer" ? "Order tracking" : "Order review"}
-        </p>
-        <h1 className="mt-3 text-4xl font-bold">
+      <section className={`${heroThemeClass} p-8`}>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur">
+            {user.role === "farmer"
+              ? "🌾 Farmer Order Fulfillment"
+              : user.role === "admin"
+              ? "🛡️ Admin Order Operations"
+              : "🛒 Consumer Pickup Orders"}
+          </span>
+        </div>
+        <h1 className="mt-3 text-4xl font-bold font-serif">
           {user.role === "admin"
-            ? "Admin order control room"
+            ? "Admin Order Control Room"
             : user.role === "farmer"
-              ? "Farmer order board"
-              : "Track your pickup orders"}
+              ? "Farmer Order Board & Receipts"
+              : "Track Your Pickup Orders"}
         </h1>
-        <p className="mt-3 max-w-3xl text-sm text-slate-100/90">
+        <p className="mt-3 max-w-3xl text-sm text-white/90 leading-6">
           {user.role === "consumer"
-            ? "Track every placed order, follow the current status, and check pickup timing from one page."
-            : "Review current orders, confirm fulfillment, complete pickup status, and read customer reviews in one place."}
+            ? "Track every placed order, download official tax receipts, and check pickup timing from one page."
+            : "Review current orders, confirm fulfillment, download tax receipts, and read customer reviews in one place."}
         </p>
       </section>
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-900">
-          {user.role === "consumer" ? "Your Orders" : "Live Orders"}
-        </h2>
-        <Button onClick={loadOrders}>Refresh</Button>
+      {/* Filter and Controls Header */}
+      <div className="rounded-[1.75rem] border border-white/80 bg-white/95 p-5 shadow-xl space-y-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex-1 relative">
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+              🔍
+            </span>
+            <input
+              type="text"
+              value={orderSearch}
+              onChange={(e) => setOrderSearch(e.target.value)}
+              placeholder="Search by Order ID, consumer name, or product..."
+              className="w-full rounded-full border border-slate-200 bg-slate-50/70 pl-10 pr-4 py-2 text-sm text-slate-800 outline-none focus:border-teal-600 focus:bg-white"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button onClick={loadOrders} className="bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
+              Refresh List
+            </Button>
+          </div>
+        </div>
+
+        {/* Status Filter Tabs */}
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2">
+            Filter Status:
+          </span>
+          {["all", "pending", "confirmed", "completed"].map((st) => (
+            <button
+              key={st}
+              type="button"
+              onClick={() => setStatusFilter(st)}
+              className={`rounded-full px-4 py-1.5 text-xs font-bold capitalize transition ${
+                statusFilter === st
+                  ? "bg-teal-800 text-white shadow"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {st}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? <Loader label="Loading orders..." /> : null}
 
-      {!loading && orders.length ? (
+      {!loading && filteredOrders.length ? (
         <div className="grid gap-5">
-          {orders.map((order) => {
+          {filteredOrders.map((order) => {
             const currentStatus = order.scopedStatus || order.status;
             const reviewTargets = user.role === "consumer" ? getConsumerReviewTargets(order) : [];
 
@@ -224,33 +299,54 @@ export default function Orders() {
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="text-lg font-semibold text-slate-900">
-                        Order #{order._id.slice(-8)}
+                      <h3 className="text-lg font-bold text-slate-900 font-serif">
+                        Order #{order._id.slice(-8).toUpperCase()}
                       </h3>
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
+                        className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
                           statusStyles[currentStatus] || "bg-slate-100 text-slate-700"
                         }`}
                       >
                         {currentStatus}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-500">
-                      Pickup: {order.pickupDate} at {order.pickupTime}
+                    <p className="text-sm text-slate-500 font-medium">
+                      Pickup Window: <strong className="text-slate-800">{order.pickupDate}</strong> at <strong className="text-slate-800">{order.pickupTime}</strong>
                     </p>
                     {user.role === "consumer" ? (
                       <p className="text-sm text-slate-500">
-                        Total: {formatCurrency(order.totalAmount)}
+                        Total Amount: <span className="font-extrabold text-emerald-800">{formatCurrency(order.totalAmount)}</span>
                       </p>
                     ) : (
                       <p className="text-sm text-slate-500">
-                        Consumer: {order.consumerId?.name || "Unknown"} (
-                        {order.consumerId?.email || "No email"})
+                        Consumer: <strong className="text-slate-800">{order.consumerId?.name || "Unknown"}</strong> ({order.consumerId?.email || "No email"})
                       </p>
                     )}
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1">
+                        💵 Payment: {formatCurrency(order.totalAmount)} (Cash on Pickup)
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => generateOrderInvoice(order, user.role)}
+                        className="rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 px-3 py-1 text-xs font-bold transition flex items-center gap-1 shadow-sm"
+                      >
+                        📄 Download Invoice (PDF)
+                      </button>
+                    </div>
                   </div>
 
-                  {user.role === "consumer" ? null : (
+                  {user.role === "consumer" ? (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => generateOrderInvoice(order, user.role)}
+                        className="rounded-full bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 text-xs font-bold transition shadow"
+                      >
+                        📄 Tax Receipt / PDF
+                      </button>
+                    </div>
+                  ) : (
                     <div className="flex flex-wrap gap-2">
                       <Button
                         onClick={() => handleStatusUpdate(order._id, "confirmed")}
@@ -259,27 +355,34 @@ export default function Orders() {
                       >
                         {currentStatus === "confirmed" || currentStatus === "completed"
                           ? "Confirmed"
-                          : "Confirm"}
+                          : "Confirm Order"}
                       </Button>
                       <Button
                         onClick={() => handleStatusUpdate(order._id, "completed")}
                         disabled={currentStatus === "completed"}
                         className={getCompleteButtonClass(currentStatus)}
                       >
-                        {currentStatus === "completed" ? "Completed" : "Complete"}
+                        {currentStatus === "completed" ? "Completed" : "Complete Pickup"}
                       </Button>
+                      <button
+                        type="button"
+                        onClick={() => generateOrderInvoice(order, user.role)}
+                        className="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 px-4 py-2 text-xs font-bold transition"
+                      >
+                        📄 Invoice
+                      </button>
                     </div>
                   )}
                 </div>
 
                 <div className="mt-5 grid gap-3 md:grid-cols-2">
                   {order.products.map((product, index) => (
-                    <div key={`${order._id}-${index}`} className="rounded-2xl bg-slate-50 p-4">
-                      <p className="font-semibold text-slate-900">{product.productName}</p>
-                      <p className="text-sm text-slate-500">Quantity: {product.quantity}</p>
-                      <p className="text-sm text-slate-500">Price: Rs. {product.price}</p>
+                    <div key={`${order._id}-${index}`} className="rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                      <p className="font-bold text-slate-900">{product.productName}</p>
+                      <p className="text-sm text-slate-600 mt-1">Quantity: {product.quantity} units</p>
+                      <p className="text-sm text-slate-600">Unit Price: Rs. {product.price}</p>
                       {user.role !== "consumer" ? (
-                        <p className="text-sm text-slate-500">
+                        <p className="text-xs font-semibold text-teal-700 mt-1 uppercase tracking-wider">
                           Item status: {product.status || order.status}
                         </p>
                       ) : null}
@@ -289,7 +392,7 @@ export default function Orders() {
 
                 {user.role === "consumer" && reviewTargets.length ? (
                   <div className="mt-6 rounded-[1.5rem] border border-teal-100 bg-teal-50/60 p-5">
-                    <h4 className="text-lg font-semibold text-slate-900">Farmer reviews</h4>
+                    <h4 className="text-lg font-semibold text-slate-900 font-serif">Farmer reviews</h4>
                     <p className="mt-1 text-sm text-slate-600">
                       Share feedback for the farmers in this order once their items are completed.
                     </p>
@@ -408,11 +511,12 @@ export default function Orders() {
         </div>
       ) : null}
 
-      {!loading && !orders.length ? (
+      {!loading && !filteredOrders.length ? (
         <div className="rounded-[1.75rem] bg-white p-8 text-center shadow-xl">
-          <p className="text-slate-500">No orders found right now.</p>
+          <p className="text-slate-500">No orders match the selected filters or search terms.</p>
         </div>
       ) : null}
     </div>
   );
 }
+

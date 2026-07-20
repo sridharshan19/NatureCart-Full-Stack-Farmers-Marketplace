@@ -6,6 +6,7 @@ export const API_BASE_URL =
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
+  timeout: 10000,
 });
 
 api.interceptors.request.use((config) => {
@@ -21,6 +22,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error?.code === "ECONNABORTED" || error?.message?.includes("timeout")) {
+      console.warn("[API] Request timed out. Server might be slow or unresponsive.");
+    }
+
     if (error?.response?.status === 401) {
       clearAuthStorage();
     }

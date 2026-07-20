@@ -10,6 +10,10 @@ const productSchema = new mongoose.Schema(
     category: String,
     price: Number,
     quantity: Number,
+    unit: {
+      type: String,
+      default: "kg",
+    },
     image: String,
   },
   { timestamps: true }

@@ -2,29 +2,29 @@ import { Link } from "react-router-dom";
 
 const features = [
   {
-    title: "One operations cockpit",
-    description: "Admin, farmers, and consumers each get a focused workflow instead of sharing a cluttered interface.",
+    title: "Direct Sourcing",
+    description: "Connect directly with local producers, supporting small-scale farms in your community.",
   },
   {
-    title: "Inventory with accountability",
-    description: "Products, stock, and seller ownership stay visible so operations feel easier to trust and maintain.",
+    title: "Verified Quality",
+    description: "Every listing belongs to a verified regional farm, ensuring organic practices and absolute freshness.",
   },
   {
-    title: "Checkout built for pickup",
-    description: "Customers can browse, add to cart, and track orders through a cleaner marketplace journey.",
+    title: "Secure Pickups",
+    description: "Coordinate convenient pickup windows directly with the farmer after placing your order.",
   },
 ];
 
 const stats = [
-  { label: "Role-based experiences", value: "3" },
-  { label: "Core commerce flows", value: "Cart, orders, reviews" },
-  { label: "Admin visibility", value: "Products + farmers + status" },
+  { label: "Verified Farms", value: "Eco-certified" },
+  { label: "Zero Middlemen", value: "Direct Trade" },
+  { label: "Fresh Guarantee", value: "Harvest to Pickup" },
 ];
 
 const pillars = [
-  "Polished storefront for browsing and purchase intent",
-  "Professional shell with clearer trust cues and navigation",
-  "Operational dashboard ready for real day-to-day usage",
+  "Fresh seasonal ingredients harvested daily",
+  "Transparent farmer profiles and direct contact",
+  "Easy online coordination for simple local pickup",
 ];
 
 export default function Home() {
@@ -37,14 +37,12 @@ export default function Home() {
 
         <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div className="max-w-3xl">
-            <p className="eyebrow text-amber-800">NatureCart marketplace</p>
+            <p className="eyebrow text-amber-800">NatureCart Marketplace</p>
             <h1 className="mt-4 text-4xl font-black leading-tight text-slate-950 sm:text-5xl lg:text-6xl">
-              A more professional farm marketplace with stronger trust, flow, and visual polish.
+              Fresh farm produce straight to your neighborhood.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-700 sm:text-lg">
-              NatureCart now feels closer to a product than a class project: cleaner
-              navigation, stronger hierarchy, better storefront presentation, and a more
-              premium admin-to-customer experience built on your existing backend.
+              NatureCart connects conscious consumers with local growers. Discover fresh seasonal harvests, coordinate local pickups, and support community agriculture with direct-to-farm orders.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -64,9 +62,9 @@ export default function Home() {
           </div>
 
           <div className="section-card-strong color-pop rounded-[1.75rem] border border-white/80 p-6">
-            <p className="eyebrow">Platform promise</p>
+            <p className="eyebrow">Platform Promise</p>
             <h2 className="mt-3 text-3xl font-bold text-slate-950">
-              Fresh produce, clear ownership, and a cleaner handoff from seller to pickup.
+              Fresh produce, clear ownership, and transparent seller-to-buyer coordinates.
             </h2>
             <div className="mt-5 space-y-3">
               {pillars.map((pillar) => (
@@ -96,14 +94,12 @@ export default function Home() {
 
       <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
         <article className="section-card-strong color-pop rounded-[1.85rem] p-7">
-          <p className="eyebrow">Why it feels stronger</p>
+          <p className="eyebrow">Direct Connection</p>
           <h2 className="mt-3 text-3xl font-bold text-slate-950">
-            Product-level design is not just decoration.
+            Empowering regional farms and conscious consumers.
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
-            The app now communicates structure and confidence more clearly, which
-            matters for marketplaces. Farmers need confidence while listing stock,
-            admins need fast scanning, and customers need reassurance before ordering.
+            Direct trade channels ensure that farmers receive fair value for their harvests while customers gain access to premium, fresh ingredients. Every order supports family-owned farms and promotes local economic growth.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
@@ -125,20 +121,20 @@ export default function Home() {
         <article className="relative overflow-hidden rounded-[1.85rem] bg-[linear-gradient(135deg,#57bb93_0%,#249b72_42%,#f0a759_100%)] p-7 text-white shadow-2xl">
           <div className="absolute -right-10 top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
           <p className="text-xs font-semibold uppercase tracking-[0.36em] text-emerald-950/70">
-            Ready for everyday use
+            Role-Based Portals
           </p>
           <div className="mt-5 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
             <div className="rounded-[1.4rem] border border-white/35 bg-white/35 p-5 text-slate-900 backdrop-blur">
-              <p className="text-sm uppercase tracking-[0.24em] text-slate-700">Admin</p>
-              <p className="mt-2 text-xl font-bold">Manage farmers and oversee product flow</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-slate-700">Admin Console</p>
+              <p className="mt-2 text-xl font-bold">Monitor operations, verify farmers, and review analytics</p>
             </div>
             <div className="rounded-[1.4rem] border border-white/35 bg-white/35 p-5 text-slate-900 backdrop-blur">
-              <p className="text-sm uppercase tracking-[0.24em] text-slate-700">Farmer</p>
-              <p className="mt-2 text-xl font-bold">Upload stock with a cleaner inventory workflow</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-slate-700">Farmer Workspace</p>
+              <p className="mt-2 text-xl font-bold">List fresh harvests, adjust pricing, and track orders</p>
             </div>
             <div className="rounded-[1.4rem] border border-white/35 bg-white/35 p-5 text-slate-900 backdrop-blur">
-              <p className="text-sm uppercase tracking-[0.24em] text-slate-700">Consumer</p>
-              <p className="mt-2 text-xl font-bold">Discover products and place pickup orders faster</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-slate-700">Consumer Marketplace</p>
+              <p className="mt-2 text-xl font-bold">Shop local organic ingredients and coordinate pickups</p>
             </div>
           </div>
         </article>

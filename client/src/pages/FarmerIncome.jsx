@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import Button from "../components/common/Button";
 import Loader from "../components/common/Loader";
 import { useToast } from "../components/common/ToastProvider";
 import { getFarmerOrders } from "../services/orderService";
 import { formatCurrency, getErrorMessage, getStoredUser } from "../utils/helpers";
+import { generateFarmerSalesReport, exportFarmerSalesCsv } from "../utils/invoiceGenerator";
 
 const isRevenueStatus = (status) => ["confirmed", "completed"].includes(status);
 
@@ -21,14 +23,14 @@ export default function FarmerIncome() {
   const user = getStoredUser();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
   const selectedIncomeView = searchParams.get("income") || "daily";
 
   useEffect(() => {
     const loadIncome = async () => {
       try {
         const orderData = await getFarmerOrders();
-        setOrders(orderData);
+        setOrders(orderData || []);
       } catch (error) {
         showError(getErrorMessage(error));
       } finally {
@@ -37,7 +39,7 @@ export default function FarmerIncome() {
     };
 
     loadIncome();
-  }, []);
+  }, [showError]);
 
   const incomeSummary = useMemo(() => {
     const now = new Date();
@@ -51,7 +53,7 @@ export default function FarmerIncome() {
       (accumulator, order) => {
         const orderDate = order.createdAt ? new Date(order.createdAt) : null;
 
-        order.products.forEach((product) => {
+        (order.products || []).forEach((product) => {
           const status = product.status || order.scopedStatus || order.status;
 
           if (!isRevenueStatus(status)) {
@@ -84,6 +86,24 @@ export default function FarmerIncome() {
     );
   }, [orders]);
 
+  const handleDownloadPdfReport = () => {
+    try {
+      generateFarmerSalesReport(user, orders, selectedIncomeView);
+      showSuccess("Farmer sales report PDF generated successfully.");
+    } catch (err) {
+      showError(getErrorMessage(err));
+    }
+  };
+
+  const handleExportCsv = () => {
+    try {
+      exportFarmerSalesCsv(user, orders, selectedIncomeView);
+      showSuccess("Farmer sales CSV data exported successfully.");
+    } catch (err) {
+      showError(getErrorMessage(err));
+    }
+  };
+
   if (!user || user.role !== "farmer") {
     return (
       <div className="rounded-[2rem] bg-white/85 p-8 shadow-xl backdrop-blur">
@@ -103,105 +123,187 @@ export default function FarmerIncome() {
 
   return (
     <div className="space-y-6">
-      <section className="surface-hero p-8">
-        <p className="text-sm uppercase tracking-[0.35em] text-amber-200">
-          Farmer income
-        </p>
-        <h1 className="mt-3 text-4xl font-bold">
-          {selectedIncomeView.charAt(0).toUpperCase() + selectedIncomeView.slice(1)} income overview
-        </h1>
-        <p className="mt-4 max-w-3xl text-sm text-teal-50/90">
-          This page contains only farmer income details.
-        </p>
+      <section className="hero-farmer p-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur">
+              🌾 Farmer Financial Center
+            </span>
+            <h1 className="mt-3 text-4xl font-bold font-serif">
+              {selectedIncomeView.charAt(0).toUpperCase() + selectedIncomeView.slice(1)} Income & Sales Report
+            </h1>
+            <p className="mt-2 max-w-3xl text-sm text-white/90">
+              Track farm revenue, generate official tax invoice reports, and review product sales history.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2.5 shrink-0">
+            <Button
+              onClick={handleDownloadPdfReport}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-bold shadow-lg"
+            >
+              📄 Download Sales Statement (PDF)
+            </Button>
+            <Button
+              onClick={handleExportCsv}
+              className="bg-emerald-800 hover:bg-emerald-900 text-white font-bold shadow-lg"
+            >
+              📊 Export CSV
+            </Button>
+          </div>
+        </div>
       </section>
 
-      {loading ? <Loader label="Loading farmer income..." /> : null}
+      {loading ? <Loader label="Loading farmer income & sales records..." /> : null}
 
       {!loading ? (
         <>
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <div className="rounded-2xl bg-white p-5 shadow">
-              <p className="text-sm text-slate-500">Total Income</p>
-              <p className="mt-2 text-3xl font-bold text-teal-700">
+            <div className="rounded-2xl bg-white p-5 shadow border border-emerald-100">
+              <p className="text-xs uppercase tracking-wider font-semibold text-emerald-800">Total Revenue</p>
+              <p className="mt-2 text-3xl font-bold text-emerald-700">
                 {formatCurrency(incomeSummary.total)}
               </p>
             </div>
             <div
-              className={`rounded-2xl bg-white p-5 shadow ${
-                selectedIncomeView === "daily" ? "ring-2 ring-emerald-400 ring-offset-2" : ""
+              className={`rounded-2xl bg-white p-5 shadow border border-slate-100 ${
+                selectedIncomeView === "daily" ? "ring-2 ring-emerald-500 ring-offset-2" : ""
               }`}
             >
-              <p className="text-sm text-slate-500">Daily Income</p>
+              <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Daily Income</p>
               <p className="mt-2 text-3xl font-bold text-emerald-700">
                 {formatCurrency(incomeSummary.daily)}
               </p>
             </div>
             <div
-              className={`rounded-2xl bg-white p-5 shadow ${
-                selectedIncomeView === "weekly" ? "ring-2 ring-sky-400 ring-offset-2" : ""
+              className={`rounded-2xl bg-white p-5 shadow border border-slate-100 ${
+                selectedIncomeView === "weekly" ? "ring-2 ring-sky-500 ring-offset-2" : ""
               }`}
             >
-              <p className="text-sm text-slate-500">Weekly Income</p>
+              <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Weekly Income</p>
               <p className="mt-2 text-3xl font-bold text-sky-700">
                 {formatCurrency(incomeSummary.weekly)}
               </p>
             </div>
             <div
-              className={`rounded-2xl bg-white p-5 shadow ${
-                selectedIncomeView === "monthly" ? "ring-2 ring-violet-400 ring-offset-2" : ""
+              className={`rounded-2xl bg-white p-5 shadow border border-slate-100 ${
+                selectedIncomeView === "monthly" ? "ring-2 ring-violet-500 ring-offset-2" : ""
               }`}
             >
-              <p className="text-sm text-slate-500">Monthly Income</p>
+              <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Monthly Income</p>
               <p className="mt-2 text-3xl font-bold text-violet-700">
                 {formatCurrency(incomeSummary.monthly)}
               </p>
             </div>
             <div
-              className={`rounded-2xl bg-white p-5 shadow ${
-                selectedIncomeView === "yearly" ? "ring-2 ring-amber-400 ring-offset-2" : ""
+              className={`rounded-2xl bg-white p-5 shadow border border-slate-100 ${
+                selectedIncomeView === "yearly" ? "ring-2 ring-amber-500 ring-offset-2" : ""
               }`}
             >
-              <p className="text-sm text-slate-500">Yearly Income</p>
+              <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Yearly Income</p>
               <p className="mt-2 text-3xl font-bold text-amber-700">
                 {formatCurrency(incomeSummary.yearly)}
               </p>
             </div>
           </section>
 
-          <section className="rounded-[1.75rem] bg-white p-6 shadow-xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-600">
-              Income focus
-            </p>
-            <h2 className="mt-2 text-2xl font-bold text-slate-900">
-              {selectedIncomeView === "daily"
-                ? "Today's earnings"
-                : selectedIncomeView === "weekly"
-                  ? "This week's earnings"
-                  : selectedIncomeView === "monthly"
-                    ? "This month's earnings"
-                    : "This year's earnings"}
-            </h2>
-            <p className="mt-3 text-sm text-slate-600">
-              {selectedIncomeView === "daily"
-                ? "Use this view to check what your confirmed and completed orders earned today."
-                : selectedIncomeView === "weekly"
-                  ? "Use this view to track your current week's confirmed and completed earnings."
-                  : selectedIncomeView === "monthly"
-                    ? "Use this view to review your confirmed and completed earnings for the current month."
-                    : "Use this view to review your confirmed and completed earnings for the current year."}
-            </p>
-            <p className="mt-6 text-4xl font-bold text-slate-900">
-              {selectedIncomeView === "daily"
-                ? formatCurrency(incomeSummary.daily)
-                : selectedIncomeView === "weekly"
-                  ? formatCurrency(incomeSummary.weekly)
-                  : selectedIncomeView === "monthly"
-                    ? formatCurrency(incomeSummary.monthly)
-                    : formatCurrency(incomeSummary.yearly)}
-            </p>
+          {/* Sales History Itemized Table */}
+          <section className="rounded-[1.75rem] bg-white p-6 shadow-xl border border-slate-100">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-700">
+                  Sales History Ledger
+                </p>
+                <h2 className="mt-1 text-2xl font-bold text-slate-900 font-serif">
+                  Product Sales & Customer Invoices
+                </h2>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleDownloadPdfReport}
+                  className="bg-amber-700 hover:bg-amber-800 text-xs text-white"
+                >
+                  📄 PDF Invoice Report
+                </Button>
+                <Button
+                  onClick={handleExportCsv}
+                  className="bg-slate-200 text-slate-800 hover:bg-slate-300 text-xs"
+                >
+                  📊 CSV Spreadsheet
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-700">
+                <thead className="bg-slate-100 text-xs uppercase text-slate-700 font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="p-3">Order Date</th>
+                    <th className="p-3">Order ID</th>
+                    <th className="p-3">Customer</th>
+                    <th className="p-3">Produce Sold</th>
+                    <th className="p-3 text-center">Qty</th>
+                    <th className="p-3 text-right">Unit Price</th>
+                    <th className="p-3 text-right">Total Revenue</th>
+                    <th className="p-3 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {orders.flatMap((order) =>
+                    (order.products || []).map((product, pIdx) => {
+                      const status = product.status || order.scopedStatus || order.status;
+                      const lineTotal = Number(product.price || 0) * Number(product.quantity || 0);
+
+                      return (
+                        <tr key={`${order._id}-${pIdx}`} className="hover:bg-slate-50 transition">
+                          <td className="p-3 font-medium text-slate-800">
+                            {order.pickupDate || (order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A")}
+                          </td>
+                          <td className="p-3 font-mono text-xs font-bold text-amber-800">
+                            #{order._id?.slice(-8).toUpperCase() || "N/A"}
+                          </td>
+                          <td className="p-3">
+                            <p className="font-semibold text-slate-900">{order.consumerId?.name || "Customer"}</p>
+                            <p className="text-xs text-slate-400">{order.consumerId?.email || ""}</p>
+                          </td>
+                          <td className="p-3 font-bold text-slate-900">{product.productName || "Fresh Produce"}</td>
+                          <td className="p-3 text-center font-bold">{product.quantity}</td>
+                          <td className="p-3 text-right">{formatCurrency(product.price || 0)}</td>
+                          <td className="p-3 text-right font-black text-emerald-800">
+                            {formatCurrency(lineTotal)}
+                          </td>
+                          <td className="p-3 text-center">
+                            <span
+                              className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold uppercase ${
+                                status === "completed"
+                                  ? "bg-emerald-100 text-emerald-900"
+                                  : status === "confirmed"
+                                  ? "bg-sky-100 text-sky-900"
+                                  : "bg-amber-100 text-amber-900"
+                              }`}
+                            >
+                              {status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+
+                  {!orders.length ? (
+                    <tr>
+                      <td colSpan="8" className="p-8 text-center text-slate-500">
+                        No sales history records available yet.
+                      </td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
           </section>
         </>
       ) : null}
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 const ToastContext = createContext(null);
@@ -28,14 +29,18 @@ export function ToastProvider({ children }) {
     [removeToast]
   );
 
+  const showSuccess = useCallback((message) => showToast(message, "success"), [showToast]);
+  const showError = useCallback((message) => showToast(message, "error"), [showToast]);
+  const showInfo = useCallback((message) => showToast(message, "info"), [showToast]);
+
   const value = useMemo(
     () => ({
       showToast,
-      showSuccess: (message) => showToast(message, "success"),
-      showError: (message) => showToast(message, "error"),
-      showInfo: (message) => showToast(message, "info"),
+      showSuccess,
+      showError,
+      showInfo,
     }),
-    [showToast]
+    [showToast, showSuccess, showError, showInfo]
   );
 
   return (

@@ -1,21 +1,25 @@
 const orderService = require("../services/orderService");
 const Order = require("../models/Order");
 
-exports.placeOrder = async (req, res) => {
-  const order = await orderService.createOrder(
-    req.user.id,
-    req.body
-  );
+exports.placeOrder = async (req, res, next) => {
+  try {
+    const order = await orderService.createOrder(
+      req.user.id,
+      req.body
+    );
 
-  console.log("[ORDER] placed", {
-    orderId: order._id.toString(),
-    consumerId: req.user.id,
-    items: order.products.length,
-    totalAmount: order.totalAmount,
-    pickupDate: order.pickupDate,
-    pickupTime: order.pickupTime,
-  });
-  res.json(order);
+    console.log("[ORDER] placed", {
+      orderId: order._id.toString(),
+      consumerId: req.user.id,
+      items: order.products.length,
+      totalAmount: order.totalAmount,
+      pickupDate: order.pickupDate,
+      pickupTime: order.pickupTime,
+    });
+    res.status(201).json(order);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.getConsumerOrders = async (req, res, next) => {

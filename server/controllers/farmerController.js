@@ -141,10 +141,13 @@ exports.updateProduct = async (req, res, next) => {
       req.body.price !== undefined ? Number(req.body.price) : product.price;
     product.quantity =
       req.body.quantity !== undefined ? Number(req.body.quantity) : product.quantity;
+    product.unit = req.body.unit ?? product.unit ?? "kg";
     product.farmerId = targetFarmerId;
 
     if (req.file) {
       product.image = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl || req.body.image) {
+      product.image = req.body.imageUrl || req.body.image;
     }
 
     await product.save();
