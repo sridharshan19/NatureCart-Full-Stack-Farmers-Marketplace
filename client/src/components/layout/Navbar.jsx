@@ -48,8 +48,8 @@ export default function Navbar() {
         if (pendingCount > 0) {
           showInfo(`🌿 You have ${pendingCount} pending order(s) waiting for confirmation!`);
         }
-      } catch (err) {
-        console.error("Failed to check pending orders:", err);
+      } catch {
+        // Silent catch for background order checking on navbar mount
       }
     };
 
@@ -77,8 +77,8 @@ export default function Navbar() {
         if (confirmedCount > 0) {
           showInfo(`🌿 You have ${confirmedCount} confirmed order(s) ready for pickup!`);
         }
-      } catch (err) {
-        console.error("Failed to check consumer orders:", err);
+      } catch {
+        // Silent catch for background consumer order checking on navbar mount
       }
     };
 

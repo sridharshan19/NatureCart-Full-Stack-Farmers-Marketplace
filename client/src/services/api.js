@@ -1,12 +1,25 @@
 import axios from "axios";
 import { clearAuthStorage } from "../utils/helpers";
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "http://localhost:5000";
+const getDefaultApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.replace(/\/$/, "");
+  }
+  if (
+    typeof window !== "undefined" &&
+    window.location.hostname !== "localhost" &&
+    window.location.hostname !== "127.0.0.1"
+  ) {
+    return window.location.origin;
+  }
+  return "http://localhost:5000";
+};
+
+export const API_BASE_URL = getDefaultApiUrl();
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
-  timeout: 10000,
+  timeout: 30000,
 });
 
 api.interceptors.request.use((config) => {
