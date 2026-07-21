@@ -23,6 +23,7 @@ export default function Register() {
     location: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { showError, showSuccess } = useToast();
 
   const handleChange = (field) => (event) => {
@@ -141,14 +142,25 @@ export default function Register() {
               value={form.email}
               onChange={handleChange("email")}
             />
-            <Input
-              type="password"
-              placeholder="Password"
-              autoComplete="new-password"
-              required
-              value={form.password}
-              onChange={handleChange("password")}
-            />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                autoComplete="new-password"
+                required
+                value={form.password}
+                onChange={handleChange("password")}
+                className="pr-16"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg bg-slate-100 hover:bg-slate-200 px-2 py-1 text-xs font-bold text-slate-700 transition"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "🙈 Hide" : "👁️ Show"}
+              </button>
+            </div>
             <Input
               placeholder="Phone number"
               autoComplete="tel"

@@ -212,8 +212,8 @@ export default function Orders() {
     user.role === "farmer"
       ? "hero-farmer"
       : user.role === "admin"
-      ? "hero-admin"
-      : "hero-consumer";
+        ? "hero-admin"
+        : "hero-consumer";
 
   return (
     <div className="space-y-5">
@@ -223,8 +223,8 @@ export default function Orders() {
             {user.role === "farmer"
               ? "🌾 Farmer Order Fulfillment"
               : user.role === "admin"
-              ? "🛡️ Admin Order Operations"
-              : "🛒 Consumer Pickup Orders"}
+                ? "🛡️ Admin Order Operations"
+                : "🛒 Consumer Pickup Orders"}
           </span>
         </div>
         <h1 className="mt-3 text-4xl font-bold font-serif">
@@ -274,11 +274,10 @@ export default function Orders() {
               key={st}
               type="button"
               onClick={() => setStatusFilter(st)}
-              className={`rounded-full px-4 py-1.5 text-xs font-bold capitalize transition ${
-                statusFilter === st
-                  ? "bg-teal-800 text-white shadow"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
+              className={`rounded-full px-4 py-1.5 text-xs font-bold capitalize transition ${statusFilter === st
+                ? "bg-teal-800 text-white shadow"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
             >
               {st}
             </button>
@@ -303,9 +302,8 @@ export default function Orders() {
                         Order #{order._id.slice(-8).toUpperCase()}
                       </h3>
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
-                          statusStyles[currentStatus] || "bg-slate-100 text-slate-700"
-                        }`}
+                        className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${statusStyles[currentStatus] || "bg-slate-100 text-slate-700"
+                          }`}
                       >
                         {currentStatus}
                       </span>
@@ -456,11 +454,10 @@ export default function Orders() {
                                             )
                                           }
                                           disabled={!target.canReview}
-                                          className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${
-                                            isActive
-                                              ? "border-amber-300 bg-amber-50 text-amber-700"
-                                              : "border-slate-200 bg-white text-slate-600 hover:border-amber-200 hover:text-amber-700"
-                                          } disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400`}
+                                          className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${isActive
+                                            ? "border-amber-300 bg-amber-50 text-amber-700"
+                                            : "border-slate-200 bg-white text-slate-600 hover:border-amber-200 hover:text-amber-700"
+                                            } disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400`}
                                         >
                                           <span className="flex items-center gap-2">
                                             <span className="text-base leading-none">
